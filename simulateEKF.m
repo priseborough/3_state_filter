@@ -1,4 +1,4 @@
-function simulateEKF(x_init,P_init,timeVec,dt,IMU_meas,IMU_noise,GPS_meas,GPS_noise,truthDataNav,plotStates)
+function simulateEKF(x_init,P_init,timeVec,dt,IMU_meas,IMU_noise_param,GPS_noise_param,GPS_noise,truthDataNav,plotStates)
 Ndata       = length(timeVec);
 x_EKF       = x_init;
 P_EKF       = P_init;
@@ -12,11 +12,11 @@ cov_out(:,1) = diag(P_init);
 tic;
 for i = 2:Ndata
     %Predict
-    [x_EKF,P_EKF] = EKFpredict(x_EKF,P_EKF,dt,IMU_meas(i-1,:),IMU_meas(i,:),IMU_noise);
+    [x_EKF,P_EKF] = EKFpredict(x_EKF,P_EKF,dt,IMU_meas(i-1,:),IMU_meas(i,:),IMU_noise_param);
     
     %Update
-    if timeVec(i) == GPS_meas(idx,1)
-        [x_EKF,P_EKF,S,nu] = EKFupdate(x_EKF,P_EKF,GPS_meas(idx,:),GPS_noise);
+    if timeVec(i) == GPS_noise_param(idx,1)
+        [x_EKF,P_EKF,S,nu] = EKFupdate(x_EKF,P_EKF,GPS_noise_param(idx,:),GPS_noise);
         S_mat(:,idx-1)    = diag(S);
         nu_mat(:,idx-1)   = nu;
         obsTime(idx-1)    = timeVec(i);

@@ -1,11 +1,11 @@
-function [x,P,S, innov] = EKFupdate(x,P,obs,GPS_noise)
+function [x,P,S, innov] = EKFupdate(x,P,obs,GPS_noise_param)
 
-%Caclulate Innovation
+%Calculate Innovation
 innov = obs(2:3)' - x(1:2);
 
 %Calculate innovation covariance
 H     = [1,0,0;0,1,0]; 
-R     = diag(GPS_noise); 
+R     = diag(GPS_noise_param); 
 S     = H * P * H' + R;
 
 %Calculate Kalman gain

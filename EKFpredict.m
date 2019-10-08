@@ -1,4 +1,4 @@
-function [x,P] = EKFpredict(x,P,dt,IMU_meas_prev,IMU_meas_current,IMU_noise)
+function [x,P] = EKFpredict(x,P,dt,IMU_meas_prev,IMU_meas_current,IMU_noise_param)
 
 %Extract states
 Vn              = x(1);
@@ -13,8 +13,8 @@ ax_current      = IMU_meas_current(2);
 ay_current      = IMU_meas_current(3);
 yawRate_current = IMU_meas_current(4);
 
-accelNoise      = IMU_noise(1);
-gyrNoise        = IMU_noise(2);
+accelNoise      = IMU_noise_param(1);
+gyrNoise        = IMU_noise_param(2);
 
 %Predict states forward
 psi_current = psi +  0.5*(yawRate_prev + yawRate_current) * dt;
