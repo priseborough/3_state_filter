@@ -66,17 +66,17 @@ truthDataNav(:,4) = truthDataBody(:,4);
 %Simulate IMU
 ax_noise      = 0.35; % m/sec^2
 ay_noise      = 0.35; % m/sec^2
-psiDot_noise  = 0.003; % rad/sec
+psiDot_noise  = 0.015; % rad/sec
 IMU_data(:,1) = timeVec';
-IMU_data(:,2) = truthBodyRates(:,2) + ax_noise*rand(length(timeVec),1); %ax
-IMU_data(:,3) = truthBodyRates(:,3) + ay_noise*rand(length(timeVec),1); %ay
-IMU_data(:,4) = truthBodyRates(:,4) + psiDot_noise*rand(length(timeVec),1); %psi_dot
+IMU_data(:,2) = truthBodyRates(:,2) + ax_noise*randn(length(timeVec),1); %ax
+IMU_data(:,3) = truthBodyRates(:,3) + ay_noise*randn(length(timeVec),1); %ay
+IMU_data(:,4) = truthBodyRates(:,4) + psiDot_noise*randn(length(timeVec),1); %psi_dot
 
 %Simulate GPS
 velNoise      = 0.5; %m/sec
 GPS_data(:,1) = timeVec(1,1:GPSUpdateRate:end)';
-GPS_data(:,2) = truthDataNav(1:GPSUpdateRate:end,2) +  velNoise*rand(length(GPS_data),1); %Vn
-GPS_data(:,3) = truthDataNav(1:GPSUpdateRate:end,3) +  velNoise*rand(length(GPS_data),1); %Ve
+GPS_data(:,2) = truthDataNav(1:GPSUpdateRate:end,2) +  velNoise*randn(length(GPS_data),1); %Vn
+GPS_data(:,3) = truthDataNav(1:GPSUpdateRate:end,3) +  velNoise*randn(length(GPS_data),1); %Ve
 
 end
 
