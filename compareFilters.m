@@ -6,7 +6,7 @@ tf              = 30;
 dt              = 0.01; %Prediction update rate
 timeVec         = [t0:dt:tf];
 GPSUpdateRate   = 10; % Hz
-N               = 20; % Number of models for GSF 
+N               = 8; % Number of models for GSF 
 noParticles     = 500; 
 
 %Define noise parameters
@@ -19,7 +19,7 @@ initial_state_uncertainty = [0.5;0.5;deg2rad(20)]; % [m/s, m/s, rad]
 
 %Initialise filters
 deg2rad             = pi/180;
-state_error_init    = [-0.5;0.5;90*deg2rad];
+state_error_init    = [-0.5;0.5;180*deg2rad];
 x_init              = [truthDataNav(1);truthDataNav(2);truthDataNav(3)] + state_error_init;
 P_init              = diag(initial_state_uncertainty.^2);
 Q0                  = diag([dt*IMU_noise_param(1);dt*IMU_noise_param(1);dt*IMU_noise_param(2)].^2);
