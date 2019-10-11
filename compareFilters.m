@@ -6,20 +6,20 @@ tf              = 30;
 dt              = 0.01; %Prediction update rate
 timeVec         = [t0:dt:tf];
 GPSUpdateRate   = 10; % Hz
-N               = 8; % Number of models for GSF 
+N               = 7; % Number of models for GSF and IMM - enables initial yaw values 60 degrees apart which provides fast initial convergence.
 noParticles     = 500; 
 
 %Define noise parameters
 IMU_noise_param = [0.35;0.015]*10; % Accel/gyro noise [m/s^2, rad/s]
 GPS_noise_param = [0.5;0.5]; % Velocity north/east noise
-initial_state_uncertainty = [0.5;0.5;deg2rad(20)]; % [m/s, m/s, rad]
+initial_state_uncertainty = [0.5;0.5;deg2rad(0.5*360/(N-1))]; % [m/s, m/s, rad]
 
 %Generate truth and sensor data 
 [truthBodyRates, truthDataBody, truthDataNav, IMU_data, GPS_data] = simulateTruthIMUandGPS(timeVec,dt,GPSUpdateRate);
 
 %Initialise filters
 deg2rad             = pi/180;
-state_error_init    = [-0.5;0.5;180*deg2rad];
+state_error_init    = [-0.5;0.5;180*deg2rad]; % 180 deg yaw error is worst case for single EKF and not aligned with any of the multipl models
 x_init              = [truthDataNav(1);truthDataNav(2);truthDataNav(3)] + state_error_init;
 P_init              = diag(initial_state_uncertainty.^2);
 Q0                  = diag([dt*IMU_noise_param(1);dt*IMU_noise_param(1);dt*IMU_noise_param(2)].^2);
