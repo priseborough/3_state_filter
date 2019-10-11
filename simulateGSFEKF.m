@@ -63,4 +63,4 @@ if plotStates == 1
     plotFilterStates(state_out,timeVec,truthDataNav,'GSF - EKF',plotCovs,S_mat,nu_mat,obsTime)
 end
 
-save('GSF_EKF_Data','timeVec','truthDataNav','state_out','cov_out','obsTime','S_mat','nu_mat','elapsedTime')
+save('GSF_EKF_Data','timeVec','truthDataNav','state_out','cov_out','obsTime','S_mat','nu_mat','elapsedTime','weights_out')
