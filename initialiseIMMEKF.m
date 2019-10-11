@@ -8,7 +8,7 @@ D2R             = pi/180;
 Vn_0            = x_init(1);
 Ve_0            = x_init(2);
 
-increment       = (1*pi)/(N-1);
+increment       = (2*pi)/N;
 
 na              = length(x_init);
 

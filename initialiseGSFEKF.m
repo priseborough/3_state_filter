@@ -8,7 +8,7 @@ Ve_0            = x_init(2);
 P_Filter        = P_init;
 
 X_GSF           = zeros(3,numberOfModels);
-increment       = (2*pi)/(N-1);
+increment       = (2*pi)/N;
 
 P_GSF           = zeros(3,3,numberOfModels);
 

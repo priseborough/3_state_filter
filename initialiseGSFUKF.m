@@ -8,12 +8,12 @@ Ve_0            = x_init(2);
 P_Filter        = P_init;
 
 X_GSF           = zeros(3,numberOfModels);
-increment       = (1*pi)/(N-1);
+increment       = (2*pi)/N;
 
 P_GSF           = zeros(3,3,numberOfModels);
 
 for i = 1:N
-    X_GSF(:,i)      = [Vn_0;Ve_0;(i-1)*increment];
+    X_GSF(:,i)      = [Vn_0;Ve_0;-pi+increment/2 + (i-1)*increment];
     P_GSF(:,:,i)    = P_Filter;
     W_GSF(i)        = 1/(numberOfModels);
 end
