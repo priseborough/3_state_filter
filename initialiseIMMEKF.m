@@ -17,8 +17,9 @@ P_Filter        = P_init;
 
 X_IMM           = zeros(na,numberOfModels); 
 
+% initialise states with yaw evenly spaced and symmetrical about 0
 for i = 1:N
-    X_IMM(:,i)      = [Vn_0;Ve_0;(i-1)*increment];
+    X_IMM(:,i)      = [Vn_0;Ve_0;-pi+increment/2 + (i-1)*increment];
     P_IMM(:,:,i)    = P_Filter;
 end
 
