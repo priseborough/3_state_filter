@@ -8,7 +8,7 @@ D2R             = pi/180;
 Vn_0            = x_init(1);
 Ve_0            = x_init(2);
 
-increment       = (1*pi)/(N-1);
+increment       = (2*pi)/N;
 
 na              = length(x_init);
 
@@ -18,7 +18,7 @@ P_Filter        = P_init;
 X_IMM           = zeros(na,numberOfModels);
 
 for i = 1:N
-    X_IMM(:,i)      = [Vn_0;Ve_0;(i-1)*increment];
+    X_IMM(:,i)      = [Vn_0;Ve_0;-pi+increment/2 + (i-1)*increment];
     P_IMM(:,:,i)    = P_Filter;
 end
 
