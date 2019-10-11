@@ -8,12 +8,13 @@ Ve_0            = x_init(2);
 P_Filter        = P_init;
 
 X_GSF           = zeros(3,numberOfModels);
-increment       = (2*pi)/(N-1); % Changed to 0 -> 360 degrees. This change breaks something
+increment       = (2*pi)/(N-1);
 
 P_GSF           = zeros(3,3,numberOfModels);
 
+% initialise states with yaw evenly spaced and symmetrical about 0
 for i = 1:N
-    X_GSF(:,i)      = [Vn_0;Ve_0;(i-1)*increment];
+    X_GSF(:,i)      = [Vn_0;Ve_0;-pi+increment/2 + (i-1)*increment];
     P_GSF(:,:,1)    = P_Filter;
     w_GSF(i)        = 1/(numberOfModels);
 end
