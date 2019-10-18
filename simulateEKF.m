@@ -1,4 +1,4 @@
-function simulateEKF(x_init,P_init,timeVec,dt,IMU_meas,IMU_noise_param,GPS_noise_param,GPS_noise,truthDataNav,plotStates)
+function simulateEKF(x_init,P_init,timeVec,dt,IMU_meas,IMU_noise_param,GPS_data,fuse_vel,GPS_noise,plotStates)
 Ndata       = length(timeVec);
 x_EKF       = x_init;
 P_EKF       = P_init;
@@ -12,11 +12,11 @@ cov_out(:,1) = diag(P_init);
 tic;
 for i = 2:Ndata
     %Predict
-    [x_EKF,P_EKF] = EKFpredict(x_EKF,P_EKF,dt,IMU_meas(i-1,:),IMU_meas(i,:),IMU_noise_param);
+    [x_EKF,P_EKF] = EKFpredict(x_EKF,P_EKF,dt(i),IMU_meas(i-1,:),IMU_meas(i,:),IMU_noise_param);
     
     %Update
-    if timeVec(i) == GPS_noise_param(idx,1)
-        [x_EKF,P_EKF,S,nu] = EKFupdate(x_EKF,P_EKF,GPS_noise_param(idx,:),GPS_noise);
+    if fuse_vel(i) == 1
+        [x_EKF,P_EKF,S,nu] = EKFupdate(x_EKF,P_EKF,GPS_data(idx,:),GPS_noise);
         S_mat(:,idx-1)    = diag(S);
         nu_mat(:,idx-1)   = nu;
         obsTime(idx-1)    = timeVec(i);
@@ -31,7 +31,7 @@ elapsedTime = toc;
 
 if plotStates == 1
     plotCovs = 1;
-    plotFilterStates(state_out,timeVec,truthDataNav,'EKF',plotCovs,S_mat,nu_mat,obsTime)
+    plotFilterStates(state_out,timeVec,'EKF',plotCovs,S_mat,nu_mat,obsTime)
 end
 
-save('EKF_Data','timeVec','truthDataNav','state_out','cov_out','obsTime','S_mat','nu_mat','elapsedTime')
+save('EKF_Data','timeVec','state_out','cov_out','obsTime','S_mat','nu_mat','elapsedTime')

@@ -17,7 +17,7 @@ accelNoise      = IMU_noise_param(1);
 gyrNoise        = IMU_noise_param(2);
 
 %Predict states forward
-psi_current = psi +  0.5*(yawRate_prev + yawRate_current) * dt;
+psi_current = psi +  yawRate_current * dt;
 
 %Convert velocities to body frame:
 % Cbn = [cos(psi) , -sin(psi) ;...

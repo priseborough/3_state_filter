@@ -1,24 +1,18 @@
-function plotFilterStates(filterStates,timeVec,truthDataNav,titleStr,plotCovs,S_mat,nu_mat,ObsTime)
+function plotFilterStates(filterStates,timeVec,titleStr,plotCovs,S_mat,nu_mat,ObsTime)
 
 figure
 subplot(3,1,1)
 plot(timeVec,filterStates(1,:))
 title(titleStr)
-hold on
-plot(timeVec,truthDataNav(:,2),'r')
-legend('Vn est','Vn truth')
+legend('Vn est')
 hold on
 subplot(3,1,2)
 plot(timeVec,filterStates(2,:))
-hold on
-plot(timeVec,truthDataNav(:,3),'r')
-legend('Ve est','Ve truth')
+legend('Ve est')
 subplot(3,1,3)
 plot(timeVec,rad2deg(wrapToPi(filterStates(3,:))))
 hold on
-plot(timeVec,rad2deg(wrapToPi(truthDataNav(:,4))),'r')
-hold on
-legend('yaw est','yaw truth')
+legend('yaw est')
 ylim([-180, 180])
 
 if plotCovs
