@@ -9,7 +9,7 @@ R     = diag(GPS_noise_param);
 S     = H * P * H' + R;
 
 %Calculate Kalman gain
-K     = P * H' * inv(S);  
+K     = P * H' * inv(S);
 
 %Update
 x     = x + K * innov;

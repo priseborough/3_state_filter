@@ -1,4 +1,4 @@
-function simulateGSFEKF(x_init,P_init,timeVec,dt,IMU_meas,IMU_noise,GPS_meas,GPS_noise,truthDataNav,N,plotStates)
+function simulateGSFEKF(x_init,P_init,timeVec,dt,IMU_meas,IMU_noise,GPS_meas,fuse_vel,GPS_noise,N,plotStates)
 
 Ndata       = length(timeVec);
 idx         = 2;
@@ -16,11 +16,11 @@ tic;
 for i = 2:Ndata
     for j = 1:N
         %Predict
-        [X_filter(:,j),P_filter(:,:,j)] = EKFpredict(X_filter(:,j),P_filter(:,:,j),dt,IMU_meas(i-1,:),IMU_meas(i,:),IMU_noise);
+        [X_filter(:,j),P_filter(:,:,j)] = EKFpredict(X_filter(:,j),P_filter(:,:,j),dt(i),IMU_meas(i-1,:),IMU_meas(i,:),IMU_noise);
     end
     
     %Update
-    if timeVec(i) == GPS_meas(idx,1)
+    if fuse_vel(i) == 1
         obsTime(idx-1) = timeVec(i);
         for j = 1:N
             [X_filter(:,j),P_filter(:,:,j),S(:,:,j),nu(:,j)] = EKFupdate(X_filter(:,j),P_filter(:,:,j),GPS_meas(idx,:),GPS_noise);
@@ -60,7 +60,7 @@ elapsedTime = toc;
 
 if plotStates == 1
     plotCovs = 1;
-    plotFilterStates(state_out,timeVec,truthDataNav,'GSF - EKF',plotCovs,S_mat,nu_mat,obsTime)
+    plotFilterStates(state_out,timeVec,'GSF - EKF',plotCovs,S_mat,nu_mat,obsTime)
 end
 
-save('GSF_EKF_Data','timeVec','truthDataNav','state_out','cov_out','obsTime','S_mat','nu_mat','elapsedTime','weights_out')
+save('GSF_EKF_Data','timeVec','state_out','cov_out','obsTime','S_mat','nu_mat','elapsedTime','weights_out')
