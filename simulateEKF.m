@@ -5,6 +5,7 @@ start_index = min(find(fuse_vel));
 end_index = max(find(fuse_vel));
 
 Ndata       = end_index - start_index +1;
+idx = 1;
 x_EKF       = x_init;
 P_EKF       = P_init;
 state_out   = zeros(3,Ndata);
@@ -14,9 +15,6 @@ initialised = boolean(false);
 
 state_out(:,1) = x_init;
 cov_out(:,1) = diag(P_init);
-
-idx = 1;
-
 
 tic;
 for i = start_index:end_index

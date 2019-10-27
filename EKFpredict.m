@@ -4,7 +4,7 @@ accelNoise      = IMU_noise_param(1);
 gyrNoise        = IMU_noise_param(2);
 
 % generate an attitude reference using IMU data
-[quat, initialised] = QuatPredict(quat, initialised, IMU_data(1:3), IMU_data(4), IMU_data(5:7), IMU_data(8));
+[quat, initialised] = QuatPredict(x, quat, initialised, IMU_data(1:3), IMU_data(4), IMU_data(5:7), IMU_data(8));
 
 % calculate delta velocity in a horizontal front-right frame
 R = Quat2Tbn(quat);

@@ -4,13 +4,13 @@ clear all, close all, clc
 % sample file here https://drive.google.com/open?id=1pO8e1G0lPnGlIkAwjPafn4Y1HuDTgPYm
 load test_data/yaw_est_input_data_02.mat; 
 
-N               = 7; % Number of models for GSF and IMM - enables initial yaw values 60 degrees apart which provides fast initial convergence.
-noParticles     = 500; 
+N_models    = 7; % Number of models for GSF and IMM - enables initial yaw values 60 degrees apart which provides fast initial convergence.
+noParticles = 500; 
 
 %Define noise parameters
 IMU_noise_param = [0.35;0.015]*10; % Accel/gyro noise [m/s^2, rad/s]
 GPS_noise_param = [0.3;0.3]; % Velocity north/east noise
-initial_state_uncertainty = [0.5;0.5;deg2rad(0.5*360/(N-1))]; % [m/s, m/s, rad]
+initial_state_uncertainty = [0.5;0.5;deg2rad(0.5*360/(N_models-1))]; % [m/s, m/s, rad]
 
 %  sensor data 
 %          IMU_data       - [delAngX,delAngY,delAngZ,delAngDt,delVelX,delVelY,delVelZ,delVelDt]
@@ -46,7 +46,7 @@ simulateEKF(x_init, P_init, timeVec, IMU_data, IMU_noise_param, GPS_data, fuse_v
 
 %*********Gaussian Sum Filters*********
 %GSF-EKF
-%simulateGSFEKF(x_init,P_init,timeVec,dt,IMU_data,IMU_noise_param,GPS_data, fuse_vel, GPS_noise_param,N,plotStates);
+simulateGSFEKF(x_init,P_init,timeVec, IMU_data, IMU_noise_param, GPS_data, fuse_vel, vel_err, N_models, plotStates);
 
 %GSF-UKF
 %simulateGSFUKF(x_init,P_init,timeVec,dt,IMU_data,IMU_noise_param,GPS_data,GPS_noise_param,Q0,truthDataNav,N,plotStates);

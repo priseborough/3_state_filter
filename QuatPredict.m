@@ -1,4 +1,4 @@
-function [quat_out,initialised] = QuatPredict(quat_in,initialised,delAng,delAngDt,delVel,delVelDt)
+function [quat_out,initialised] = QuatPredict(x,quat_in,initialised,delAng,delAngDt,delVel,delVelDt)
 
 	% generate attitude solution using simple complementary filter
 
@@ -18,6 +18,7 @@ function [quat_out,initialised] = QuatPredict(quat_in,initialised,delAng,delAngD
 	if (~initialised)
 		if (ok_to_align)
 			quat_out = AlignTilt(delVel);
+            quat_out = AlignYaw(quat_out,x(3));
 			initialised = boolean(true);
         else
             initialised = boolean(false);
