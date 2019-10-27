@@ -1,43 +1,32 @@
-function [x,P] = EKFpredict(x,P,dt,IMU_meas_prev,IMU_meas_current,IMU_noise_param)
-
-%Extract states
-Vn              = x(1);
-Ve              = x(2);
-psi             = x(3);
-
-ax_prev         = IMU_meas_prev(2);
-ay_prev         = IMU_meas_prev(3);
-yawRate_prev    = IMU_meas_prev(4);
-
-ax_current      = IMU_meas_current(2);
-ay_current      = IMU_meas_current(3);
-yawRate_current = IMU_meas_current(4);
+function [x,P,quat,initialised] = EKFpredict(quat,initialised,x,P,IMU_data,IMU_noise_param)
 
 accelNoise      = IMU_noise_param(1);
 gyrNoise        = IMU_noise_param(2);
 
-%Predict states forward
-psi_current = psi +  yawRate_current * dt;
+% generate an attitude reference using IMU data
+[quat, initialised] = QuatPredict(quat, initialised, IMU_data(1:3), IMU_data(4), IMU_data(5:7), IMU_data(8));
 
-%Convert velocities to body frame:
-% Cbn = [cos(psi) , -sin(psi) ;...
-%        sin(psi) ,  cos(psi)];
+% calculate delta velocity in a horizontal front-right frame
+R = Quat2Tbn(quat);
+del_vel_NED = R * [IMU_data(5);IMU_data(6);IMU_data(7)];
+if (abs(R(3, 1)) < abs(R(3, 2)))
+    % use 321 Tait-Bryan rotation
+    yaw = atan2(R(2, 1), R(1, 1));
+else
+    % use 312 Tait-Bryan rotation
+    yaw = atan2(-R(1, 2), R(2, 2)); % first rotation (yaw)
+end
+del_vel_FR(1) =   del_vel_NED(1) * cos(yaw) + del_vel_NED(2) * sin(yaw);
+del_vel_FR(2) = - del_vel_NED(1) * sin(yaw) + del_vel_NED(2) * cos(yaw);
 
-Vx = Vn*cos(psi) + Ve*sin(psi);
-Vy = Vn*(-sin(psi)) + Ve*cos(psi);
+% sum delta velocties in earth frame:
+x(1) = x(1) + del_vel_NED(1);
+x(2) = x(2) + del_vel_NED(2);
 
-dvx = 0.5*dt*(ax_prev + ax_current);
-Vx  = Vx + dvx;
+% take yaw angle from quaternion solution
+x(3) = yaw;
 
-dvy = 0.5*dt*(ay_prev + ay_current);
-Vy  = Vy + dvy;
-
-Vn = Vx * cos(psi_current) - Vy * sin(psi_current); 
-Ve = Vx * sin(psi_current) - Vy * cos(psi_current); 
-
-F            = calcFmat(dvx,dvy,psi);
-Q            = calcQmat((gyrNoise*dt)^2,(accelNoise*dt)^2,(accelNoise*dt)^2,psi);
-
+% predict covariance
+F            = calcFmat(del_vel_FR(1),del_vel_FR(2),x(3));
+Q            = calcQmat((gyrNoise*IMU_data(4))^2,(accelNoise*IMU_data(8))^2,(accelNoise*IMU_data(8))^2,x(3));
 P            = F*P*F' + Q;
-x            = [Vn;Ve;psi_current];
-IMUData      = IMU_meas_current;

@@ -1,4 +1,4 @@
-function [quat_out,initialised] = QuatPredict(quat_in,delAng,delAngDt,delVel,delVelDt,initialised)
+function [quat_out,initialised] = QuatPredict(quat_in,initialised,delAng,delAngDt,delVel,delVelDt)
 
 	% generate attitude solution using simple complementary filter
 
@@ -39,13 +39,12 @@ function [quat_out,initialised] = QuatPredict(quat_in,delAng,delAngDt,delVel,del
         
         % misalignment between gravity vector and measured accel unit
         % vectors is used to calculate a correction.
-		correction = [0;0;0];
-		if (ok_to_align)
-			correction = cross(k , accel ./ accel_norm) * accel_fusion_gain * delAngDt;
-        end
+        correction = cross(k , accel ./ accel_norm) * accel_fusion_gain * delAngDt;
 
-		% rotate attitude forward by gyro and correction delta angle 
-		quat_out = QuatMult(quat_in , RotToQuat(correction + delAng));
+		% rotate attitude forward by gyro and correction delta angle
+        delta_rot = correction + delAng;
+        delta_quat = RotToQuat(delta_rot');
+		quat_out = QuatMult(quat_in , delta_quat);
 
 		% Normalize quaternion
 		quat_out = NormQuat(quat_out);
