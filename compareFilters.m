@@ -2,7 +2,8 @@ clear all, close all, clc
 
 %load test data
 % sample file here https://drive.google.com/drive/u/0/folders/0By4v2BuLAaCfU1FSYUQ5aVhBT2c
-load test_data/yaw_est_input_data_03.mat; 
+% autopilot initialised pointing Sout and moved at a fast walk.
+load test_data/yaw_est_input_data_04.mat; 
 
 N_models    = 7; % Number of models for GSF and IMM - enables initial yaw values 60 degrees apart which provides fast initial convergence.
 noParticles = 500; 
