@@ -41,3 +41,9 @@ distMatrix = diag([dvxVar dvyVar dazVar]);
 Q = G*distMatrix*transpose(G);
 matlabFunction(Q,'file','calcQmat.m');
 
+% derive expressions for the covariance prediction
+syms P00 P01 P02 P10 P11 P12 P20 P21 P22 real;
+P = [P00 P01 P02;P10 P11 P12;P20 P21 P22];
+Pnext = F*P*F' +Q;
+matlabFunction(Pnext,'file','calcPmat.m');
+ccode(Pnext,'file','calcPmat.txt');
