@@ -1,5 +1,4 @@
 function plotFilterStates(filterStates,timeVec,titleStr,plotCovs,S_mat,nu_mat,ObsTime)
-
 figure
 subplot(3,1,1)
 plot(timeVec,filterStates(1,:))

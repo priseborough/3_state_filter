@@ -1,7 +1,7 @@
 function [quat,x,P,S, innov] = EKFupdate(quat,x,P,obs,obs_noise_var)
 
 %Calculate Innovation
-innov = obs(1:2)' - x(1:2);
+innov = obs(1:2) - x(1:2);
 
 %Calculate innovation covariance
 H     = [1,0,0;0,1,0]; 

@@ -23,7 +23,7 @@ for i = start_index:end_index
     
     %Update
     if fuse_vel(i) == 1
-        [quat,x_EKF,P_EKF,S,nu] = EKFupdate(quat,x_EKF,P_EKF,GPS_data(i,:),[vel_err(i)^2,vel_err(i)^2]);
+        [quat,x_EKF,P_EKF,S,nu] = EKFupdate(quat,x_EKF,P_EKF,GPS_data(i,:)',[vel_err(i)^2,vel_err(i)^2]);
         S_mat(:,idx)    = diag(S);
         nu_mat(:,idx)   = nu;
         obsTime(idx)    = timeVec(i);

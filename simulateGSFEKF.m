@@ -17,6 +17,7 @@ quat        = zeros(4,N_models);
 quat(1,:)   = ones(1,N_models);
 initialised = boolean(zeros(1,N_models));
 
+
 [X_filter,P_filter,w] = initialiseGSFEKF(x_init,P_init,N_models);
 
 tic;
@@ -30,7 +31,7 @@ for i = start_index:end_index
     if fuse_vel(i) == 1
         obsTime(idx) = timeVec(i);
         for j = 1:N_models
-            [quat(:,j),X_filter(:,j),P_filter(:,:,j),S(:,:,j),nu(:,j)] = EKFupdate(quat(:,j),X_filter(:,j),P_filter(:,:,j),GPS_meas(i,:),[vel_err(i)^2,vel_err(i)^2]);
+            [quat(:,j),X_filter(:,j),P_filter(:,:,j),S(:,:,j),nu(:,j)] = EKFupdate(quat(:,j),X_filter(:,j),P_filter(:,:,j),GPS_meas(i,:)',[vel_err(i)^2,vel_err(i)^2]);
             S_mat(:,idx,j) = diag(S(:,:,j));
             nu_mat(:,idx,j) = nu(:,j);
         end

@@ -47,14 +47,14 @@ simulateEKF(x_init, P_init, timeVec, IMU_data, IMU_noise_param, GPS_data, fuse_v
 
 %*********Gaussian Sum Filters*********
 %GSF-EKF
-simulateGSFEKF(x_init,P_init,timeVec, IMU_data, IMU_noise_param, GPS_data, fuse_vel, vel_err, N_models, plotStates);
+simulateGSFEKF(x_init, P_init, timeVec, IMU_data, IMU_noise_param, GPS_data, fuse_vel, vel_err, N_models, plotStates);
 
 %GSF-UKF
 %simulateGSFUKF(x_init,P_init,timeVec,dt,IMU_data,IMU_noise_param,GPS_data,GPS_noise_param,Q0,truthDataNav,N,plotStates);
 
 %*********Interacting Multiple Model Filters*********
 %IMM-EKF
-%simulateIMMEKF(x_init,P_init,timeVec,dt,IMU_data,IMU_noise_param,GPS_data,GPS_noise_param,truthDataNav,N,plotStates);
+simulateIMMEKF(x_init, P_init, timeVec, IMU_data, IMU_noise_param, GPS_data, fuse_vel, vel_err, N_models, plotStates);
 
 %IMM-UKF
 %simulateIMMUKF(x_init,P_init,timeVec,dt,IMU_data,IMU_noise_param,GPS_data,GPS_noise_param,Q0,truthDataNav,N,plotStates);

@@ -1,4 +1,4 @@
-function [X_Filter,P_Filter, innovation_store, S_store, X_IMM, P_IMM, modeProbs]= IMMEKFUpdate(X_IMM,P_IMM,IMU_meas,IMU_noise,GPS_meas,GPS_noise,transMatrix,modeProbs,EKF_update,dt)
+function [X_Filter,P_Filter, innovation_store, S_store, X_IMM, P_IMM, modeProbs]= IMMEKFUpdate(X_IMM, P_IMM, IMU_meas, IMU_noise, GPS_meas, GPS_noise, transMatrix, modeProbs, EKF_update)
 
 %Determine number of models
 m = size(X_IMM,2);
@@ -6,9 +6,22 @@ m = size(X_IMM,2);
 %Number of states
 n = size(X_IMM,1);
 
+persistent quat
+if (isempty(quat))
+    quat = zeros(4,m);
+    quat(1,:)   = ones(1,m);
+end
+
+persistent initialised
+if (isempty(initialised))
+    initialised = boolean(zeros(1,m));
+end
+
 %Number of measurements
+measurement = [0;0];
 if ~isempty(GPS_meas)
-    measurement = GPS_meas(2:3);
+    measurement(1) = GPS_meas(1);
+    measurement(2) = GPS_meas(2);
 end
 
  innovation_store = [];
@@ -44,19 +57,18 @@ for j = 1:m
     end
 end
 
+obsStates           = length(measurement);
+S_store             = zeros(obsStates,m);
+innovation_store    = zeros(obsStates,m);
 for i = 1:m
     
-    [X0j(:,i),P0j(:,:,i)] = EKFpredict(X0j(:,i),P0j(:,:,i),dt,IMU_meas(1,:),IMU_meas(2,:),IMU_noise);
+    [X0j(:,i),P0j(:,:,i), quat(:,i), initialised(i)] = EKFpredict(quat(:,i), initialised(i), X0j(:,i), P0j(:,:,i), IMU_meas, IMU_noise);
     
     if EKF_update == 1
         %Perform Kalman filter updates on each filter and calculate likelihoods
-        obsStates           = length(measurement);
-        S_store             = zeros(obsStates,m);
-        innovation_store    = zeros(obsStates,m);
-        
-        [X0j(:,i),P0j(:,:,i),S,innovation] = EKFupdate(X0j(:,i),P0j(:,:,i),GPS_meas,GPS_noise);
+        [quat(:,i), X0j(:,i),P0j(:,:,i), S,innovation] = EKFupdate(quat(:,i), X0j(:,i), P0j(:,:,i), measurement, [GPS_noise^2,GPS_noise^2]);
         measurementPred = X0j(1:2,i);
-        lamda(i)        = GaussianDensity(measurement', measurementPred, S);
+        lamda(i)        = GaussianDensity(measurement, measurementPred, S);
         
         S_store(:,i)            = diag(S);
         innovation_store(:,i)   = innovation;
