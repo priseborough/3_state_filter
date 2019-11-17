@@ -7,7 +7,7 @@ syms gravity 'real' % gravity  - m/sec^2
 syms dazVar dvxVar dvyVar  'real'; % IMU delta angle and delta velocity measurement variances
 
 % derive the body to nav direction transformation matrix
-Tbn = [cos(psi) , -sin(psi) ;...
+Tbn = [ cos(psi) , -sin(psi) ;...
         sin(psi) ,  cos(psi)];
 
 % attitude update equation
@@ -44,6 +44,27 @@ matlabFunction(Q,'file','calcQmat.m');
 % derive expressions for the covariance prediction
 syms P00 P01 P02 P10 P11 P12 P20 P21 P22 real;
 P = [P00 P01 P02;P10 P11 P12;P20 P21 P22];
-Pnext = F*P*F' +Q;
+Pnext = F*P*F' + Q;
 matlabFunction(Pnext,'file','calcPmat.m');
 ccode(Pnext,'file','calcPmat.txt');
+
+%% derive the covariance update equation
+H = [1,0,0;0,1,0]; 
+syms velObsVar real;
+R = [velObsVar 0 ; 0 velObsVar]; 
+S = H * P * H' + R;
+
+matlabFunction(S,'file','calcS.m');
+ccode(S,'file','calcS.txt');
+
+%Calculate Kalman gain
+K = P * H' * inv(S);
+
+matlabFunction(K,'file','calcK.m');
+ccode(K,'file','calcK.txt');
+
+% Update
+Pnew = P - K*S*K';
+
+matlabFunction(Pnew,'file','calcPupdate.m');
+ccode(Pnew,'file','calcPupdate.txt');
