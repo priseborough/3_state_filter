@@ -27,6 +27,12 @@ x(2) = x(2) + del_vel_NED(2);
 x(3) = yaw;
 
 % predict covariance
-F            = calcFmat(del_vel_FR(1),del_vel_FR(2),x(3));
-Q            = calcQmat((gyrNoise*IMU_data(4))^2,(accelNoise*IMU_data(8))^2,(accelNoise*IMU_data(8))^2,x(3));
-P            = F*P*F' + Q;
+% optimised version of
+% F            = calcFmat(del_vel_FR(1),del_vel_FR(2),x(3));
+% Q            = calcQmat((gyrNoise*IMU_data(4))^2,(accelNoise*IMU_data(8))^2,(accelNoise*IMU_data(8))^2,x(3));
+% P            = F*P*F' + Q;
+
+dazVar = (gyrNoise*IMU_data(4))^2;
+dvyVar = (accelNoise*IMU_data(8))^2;
+dvxVar = dvyVar;
+P = calcPmat(P(1,1),P(1,2),P(1,3),P(2,1),P(2,2),P(2,3),P(3,1),P(3,2),P(3,3),dazVar,del_vel_FR(1),del_vel_FR(2),dvxVar,dvyVar,x(3));
