@@ -32,6 +32,7 @@ GPS_data(:,3) = vel2;
 %Initialise filters
 deg2rad             = pi/180;
 x_init              = [0;0;0];
+x_offset            = [0;0;pi]; % initial offset used for single filter testing
 P_init              = diag(initial_state_uncertainty.^2);
 Q0                  = diag([median(del_vel_dt)*IMU_noise_param(1);median(del_vel_dt)*IMU_noise_param(1);median(del_ang_dt)*IMU_noise_param(2)].^2);
 
@@ -40,7 +41,7 @@ plotStates          = 1;
 
 %*********Single Filters*********
 %EKF
-simulateEKF(x_init, P_init, timeVec, IMU_data, IMU_noise_param, GPS_data, fuse_vel, vel_err, plotStates);
+simulateEKF(x_init+x_offset, P_init, timeVec, IMU_data, IMU_noise_param, GPS_data, fuse_vel, vel_err, plotStates);
 
 %UKF
 %simulateUKF(x_init,P_init,timeVec,dt,IMU_data,IMU_noise_param,GPS_data,Q0,truthDataNav,plotStates);
