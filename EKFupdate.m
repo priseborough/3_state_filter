@@ -4,12 +4,14 @@ function [quat,x,P,S, innov] = EKFupdate(quat,x,P,obs,obs_noise_var)
 innov = obs(1:2) - x(1:2);
 
 %Calculate innovation covariance
-H     = [1,0,0;0,1,0]; 
-R     = diag(obs_noise_var); 
-S     = H * P * H' + R;
+% H     = [1,0,0;0,1,0]; 
+% R     = diag(obs_noise_var); 
+% S     = H * P * H' + R;
+S = calcS(P(1,1),P(1,2),P(2,1),P(2,2),obs_noise_var(1));
 
 %Calculate Kalman gain
-K     = P * H' * inv(S);
+% K     = P * H' * inv(S);
+K = calcK(P(1,1),P(1,2),P(2,1),P(2,2),P(3,1),P(3,2),obs_noise_var(1));
 
 %Update
 correction = K * innov;
