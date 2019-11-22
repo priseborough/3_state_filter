@@ -1,8 +1,9 @@
-syms daz 'real' % IMU delta angle yaw measurement in body axes - rad
-syms dvx dvy 'real' % IMU delta velocity measurements in front-right body axes - m/sec
-syms psi 'real' % yaw angle of X body axis wrt north
-syms vn ve 'real' % NE velocity - m/sec
+syms daz 'real' % IMU delta angle measurements in body axes - rad
+syms dvx dvy 'real' % IMU delta velocity measurements in body axes - m/sec
+syms psi 'real'
+syms vn ve 'real' % NED velocity - m/sec
 syms dt 'real' % IMU time step - sec
+syms gravity 'real' % gravity  - m/sec^2
 syms dazVar dvxVar dvyVar  'real'; % IMU delta angle and delta velocity measurement variances
 
 % derive the body to nav direction transformation matrix
@@ -43,7 +44,7 @@ matlabFunction(Q,'file','calcQmat.m');
 % derive expressions for the covariance prediction
 syms P00 P01 P02 P10 P11 P12 P20 P21 P22 real;
 P = [P00 P01 P02;P10 P11 P12;P20 P21 P22];
-Pnext = F'*P*F + Q;
+Pnext = F*P*F' + Q;
 matlabFunction(Pnext,'file','calcPmat.m');
 ccode(Pnext,'file','calcPmat.txt');
 
