@@ -15,6 +15,6 @@ P_GSF           = zeros(3,3,numberOfModels);
 % initialise states with yaw evenly spaced and symmetrical about 0
 for i = 1:N
     X_GSF(:,i)      = [Vn_0;Ve_0;-pi+increment/2 + (i-1)*increment];
-    P_GSF(:,:,1)    = P_Filter;
+    P_GSF(:,:,i)    = P_Filter;
     w_GSF(i)        = 1/(numberOfModels);
 end
